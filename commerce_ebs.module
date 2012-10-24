@@ -136,9 +136,9 @@ function commerce_ebs_redirect_form_validate($order, $payment_method) {
     watchdog('commerce_ebs', 'Receiving payment response for order !order_id from Authorize.Net', array('!order_id' => $order_id));
 
     $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-    //check the currency and convert it back to the amount    
+    //check the currency and convert it back to the amount
     $currency_code = $order_wrapper->commerce_order_total->currency_code->value();
-    print $currency_code . '...........';
+
     if ($currency_code != 'INR') {
       if ($payment_method['settings']['exchange_rate']) {
         $inr_total = $amount / $payment_method['settings']['exchange_rate'];
@@ -183,8 +183,8 @@ function commerce_ebs_redirect_form_validate($order, $payment_method) {
         $transaction->payload[REQUEST_TIME] = $response;
 
         if ($response_code == '0') { // order APPROVED (1)
-          $gateway_method = $payment_method['settings']['method'];
-          $message = t('Authorized by !method order with Transaction id: !transaction_id. (payment id : !payment_id, description: !description) !reason_text', 
+          $gateway_method = $payment_method['settings']['payment_mode'];
+          $message = t('Authorized by !method order with Transaction id: !transaction_id. (payment id : !payment_id, description: !description) !reason_text',
             array(
               '!method' => $gateway_method,
               '!transaction_id' => $transaction_id,
@@ -290,7 +290,7 @@ function commerce_ebs_order_form($form, &$form_state, $order, $settings) {
 
   //secure hash validation
   $string =  $settings['secret_key'] . '|' . $settings['account_id'] . '|' . $inr_total . '|' .   $order->order_id . '|' . $return_url . '|' .  $settings['payment_mode'];
-  //echo '<pre>'; print_r($string); exit();
+
   $secure_hash = md5($string);
   $data = array(
     'secure_hash' => $secure_hash,
