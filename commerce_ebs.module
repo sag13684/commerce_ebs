@@ -299,7 +299,7 @@ function commerce_ebs_order_form($form, &$form_state, $order, $settings) {
     'amount' => $inr_total,
     'return_url' => $return_url,
     'mode' => $settings['payment_mode'],
-    'name' => drupal_substr($billing_address['name_line'], 0, 128),
+    'name' => !empty($billing_address['name_line']) ? drupal_substr($billing_address['name_line'], 0, 128) : drupal_substr($billing_address['first_name'], 0, 128),
     'address' => drupal_substr($billing_address['thoroughfare'], 0, 255),
     'city' => drupal_substr($billing_address['locality'], 0, 32),
     'state' => drupal_substr($billing_address['administrative_area'], 0, 32),
